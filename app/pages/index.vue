@@ -64,7 +64,7 @@ const games = [
     slug: 'scramble',
     name: 'Scramble',
     icon: '🚀',
-    description: 'Side-scrolling shooter — fly through enemy terrain, bomb fuel tanks to keep going, and destroy the base.',
+    description: 'Fly through scrolling enemy terrain, bomb fuel depots to stay airborne, and destroy the base.',
   },
   {
     slug: 'animal-count',
