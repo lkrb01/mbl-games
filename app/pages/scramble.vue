@@ -1,18 +1,22 @@
 <template>
   <div class="page">
-    <nav>
-      <NuxtLink to="/" class="back">← Games</NuxtLink>
-      <button class="mute-btn" @click="toggleMute">{{ muted ? '🔇' : '🔊' }}</button>
+    <nav class="nav">
+      <NuxtLink to="/" class="back">← Back</NuxtLink>
+      <button class="mute-btn" :title="muted ? 'Unmute' : 'Mute'" @click="toggleMute">{{ muted ? '🔇' : '🔊' }}</button>
     </nav>
-    <canvas ref="canvas" :width="W" :height="H" class="game-canvas" />
+
+    <div class="game-wrap">
+      <canvas ref="canvas" :width="W" :height="H" class="canvas" />
+    </div>
+
     <div class="mobile-controls">
       <div class="ud-pad">
-        <button class="ctrl-btn" @touchstart.prevent="keys.up=true" @touchend.prevent="keys.up=false">▲</button>
-        <button class="ctrl-btn" @touchstart.prevent="keys.down=true" @touchend.prevent="keys.down=false">▼</button>
+        <button class="dpad-btn" @touchstart.prevent="keys.up=true" @touchend.prevent="keys.up=false">▲</button>
+        <button class="dpad-btn" @touchstart.prevent="keys.down=true" @touchend.prevent="keys.down=false">▼</button>
       </div>
       <div class="action-btns">
-        <button class="ctrl-btn fire-btn" @touchstart.prevent="keys.fire=true" @touchend.prevent="keys.fire=false">FIRE</button>
-        <button class="ctrl-btn bomb-btn" @touchstart.prevent="keys.bomb=true" @touchend.prevent="keys.bomb=false">BOMB</button>
+        <button class="dpad-btn fire-btn" @touchstart.prevent="keys.fire=true" @touchend.prevent="keys.fire=false">FIRE</button>
+        <button class="dpad-btn bomb-btn" @touchstart.prevent="keys.bomb=true" @touchend.prevent="keys.bomb=false">BOMB</button>
       </div>
     </div>
   </div>
@@ -686,80 +690,88 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #050510;
-  color: #f1f5f9;
-  padding-bottom: 24px;
+  padding: 24px 16px 40px;
+  background: radial-gradient(ellipse at top, #0d1b2a 0%, #0f0f1a 70%);
 }
 
-nav {
+.nav {
   width: 100%;
   max-width: 500px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
+  margin-bottom: 24px;
 }
 
 .back {
-  color: #818cf8;
-  text-decoration: none;
   font-size: 0.9rem;
+  color: #64748b;
+  transition: color 0.15s;
 }
-.back:hover { text-decoration: underline; }
+.back:hover { color: #94a3b8; }
 
 .mute-btn {
   background: none;
-  border: 1px solid #2d2d44;
-  border-radius: 6px;
-  color: #94a3b8;
+  border: none;
+  font-size: 1.1rem;
   cursor: pointer;
-  padding: 4px 10px;
-  font-size: 1rem;
+  padding: 2px 4px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  line-height: 1;
+}
+.mute-btn:hover { opacity: 1; }
+
+.game-wrap {
+  position: relative;
+  border: 2px solid #1e3a5f;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(52, 211, 153, 0.08);
 }
 
-.game-canvas {
-  border: 2px solid #1e1e3a;
-  border-radius: 4px;
+.canvas {
+  display: block;
   max-width: 100%;
-  image-rendering: pixelated;
 }
 
 .mobile-controls {
   display: flex;
   gap: 32px;
   align-items: center;
-  margin-top: 18px;
+  margin-top: 28px;
 }
 
 .ud-pad {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .action-btns {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
 }
 
-.ctrl-btn {
+.dpad-btn {
+  width: 52px;
+  height: 52px;
   background: #1e1e2e;
-  border: 2px solid #3d3d5c;
-  border-radius: 8px;
-  color: #f1f5f9;
-  cursor: pointer;
+  border: 1px solid #2d2d44;
+  border-radius: 10px;
+  color: #e2e8f0;
   font-size: 1.1rem;
-  padding: 12px 18px;
-  min-width: 56px;
-  min-height: 48px;
-  touch-action: none;
+  cursor: pointer;
+  transition: background 0.1s;
+  touch-action: manipulation;
   user-select: none;
 }
-.ctrl-btn:active { background: #2d2d4e; border-color: #818cf8; }
+.dpad-btn:hover  { background: #2d2d44; }
+.dpad-btn:active { background: #3d3d5c; }
 
-.fire-btn { border-color: #ff4444; color: #ff8888; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; }
-.bomb-btn { border-color: #ffaa00; color: #ffcc44; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; }
+.fire-btn { color: #ff8888; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
+.bomb-btn { color: #ffcc44; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
 
 @media (min-width: 600px) {
   .mobile-controls { display: none; }
