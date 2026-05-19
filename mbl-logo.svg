@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="120" viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
+  <title>MBL — Made by Lars</title>
+  <desc>MBL logo in Playfair Display with vertical rule and Made by Lars slogan</desc>
+
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&amp;display=swap');
+      .mbl { font-family: 'Playfair Display', Georgia, serif; font-size: 72px; font-weight: 500; fill: #111111; letter-spacing: -0.01em; }
+      .slogan { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; font-size: 11px; font-weight: 400; fill: #888888; letter-spacing: 0.18em; }
+      .rule { stroke: #cccccc; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- mbl wordmark — right edge of l lands at ~148px -->
+  <text x="10" y="88" class="mbl">mbl</text>
+
+  <!-- rule: 8px after l (~148+8=156), centered on l midpoint (~66) -->
+  <line x1="156" y1="50" x2="156" y2="94" class="rule"/>
+
+  <!-- slogan: 8px after rule (156+1+8=165) -->
+  <text x="165" y="69" class="slogan">MADE</text>
+  <text x="165" y="84" class="slogan">BY LARS</text>
+
+</svg>
