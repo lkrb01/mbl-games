@@ -43,7 +43,7 @@ const SEG_W      = 52
 const LASER_SPD  = 355
 const BOMB_GRAV  = 265
 const FUEL_MAX   = 100
-const FUEL_DRAIN = 6.5
+const FUEL_DRAIN = 3.2
 const FIRE_CD    = 0.20
 const BOMB_CD    = 0.38
 const ZONE_LEN   = 2000
@@ -148,7 +148,7 @@ function addTerrainSeg() {
     baseSpawned = true
     segsSinceObj = 0
   } else if (!isBaseZone && segsSinceObj >= 4 + Math.floor(Math.random() * 4)) {
-    const type: GObj['type'] = Math.random() < 0.38 ? 'fuel' : 'launcher'
+    const type: GObj['type'] = Math.random() < 0.50 ? 'fuel' : 'launcher'
     gobjs.push({ x: nx, gy: ngY, type, alive: true, cd: 0 })
     segsSinceObj = 0
   }
@@ -195,7 +195,7 @@ function hitGobj(o: GObj) {
   if (!o.alive) return
   o.alive = false
   if (o.type === 'fuel') {
-    fuel.value = Math.min(FUEL_MAX, fuel.value + 32)
+    fuel.value = Math.min(FUEL_MAX, fuel.value + 45)
     score.value += 80
     burst(o.x, o.gy, '#ff9900', 14)
     sound.eat()
