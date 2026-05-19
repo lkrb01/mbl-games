@@ -55,6 +55,22 @@ public/
   mbl-logo.svg
 ```
 
+## Docker
+
+Run the latest image directly — no Node.js installation required:
+
+```bash
+docker run -p 3000:3000 lkrb01/mbl-games:latest
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+To run on a different port (e.g. 8080):
+
+```bash
+docker run -p 8080:3000 lkrb01/mbl-games:latest
+```
+
 ## Development
 
 ```bash
