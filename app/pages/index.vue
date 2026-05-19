@@ -61,6 +61,12 @@ const games = [
     description: 'Run, jump and collect coins. Stomp enemies and survive as long as you can!',
   },
   {
+    slug: 'scramble',
+    name: 'Scramble',
+    icon: '🚀',
+    description: 'Side-scrolling shooter — fly through enemy terrain, bomb fuel tanks to keep going, and destroy the base.',
+  },
+  {
     slug: 'animal-count',
     name: 'Animal Count',
     icon: '🔢',

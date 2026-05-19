@@ -13,6 +13,7 @@ A collection of browser games built with Nuxt 4 and Vue 3. No external game libr
 | 👾 **Space Invaders** | Canvas | Shoot down waves of descending aliens |
 | 🚗 **Rally-X** | Canvas | Drive a maze, collect flags, use smoke to shake off enemy cars |
 | 🏃 **Platformer** | Canvas | Side-scrolling — jump between platforms, stomp enemies, collect coins |
+| 🚀 **Scramble** | Canvas | Side-scrolling shooter — fly through enemy terrain, bomb fuel depots to keep going, reach the base |
 | 🔢 **Animal Count** | DOM | Count animals and tap the right number (great for small children) |
 | 🔤 **Spell the Animal** | DOM | Tap letters in order to spell the animal's name |
 
