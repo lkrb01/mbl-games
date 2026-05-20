@@ -83,6 +83,21 @@ const TRACKS: Record<string, Track> = {
     ],
   },
 
+  // ── Galaxian: ominous A minor drive, 138 BPM ─────────────────────────────
+  galaxian: {
+    bpm: 138, loop: 16,
+    voices: [
+      { type: 'square', vol: 0.12, notes: [
+        [0,1,45],[2,1,45],[4,1,48],[6,1,45],
+        [8,1,43],[10,1,43],[12,1,45],[14,1,43],
+      ]},
+      { type: 'square', vol: 0.07, notes: [
+        [0,2,69],[4,1,72],[5,1,71],[6,2,69],
+        [8,2,67],[11,1,65],[12,2,67],[14,2,69],
+      ]},
+    ],
+  },
+
   // ── Space Invaders: march, C minor, 120 BPM ──────────────────────────────
   'space-invaders': {
     bpm: 120, loop: 8,

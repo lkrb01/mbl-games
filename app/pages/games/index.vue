@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <header class="hero">
-      <img src="/mbl-logo.svg" alt="MBL — Made by Lars" class="logo" />
       <p class="subtitle">Games</p>
     </header>
 
@@ -47,6 +46,12 @@ const games = [
     name: 'Space Invaders',
     icon: '👾',
     description: 'Shoot down waves of alien invaders before they reach the ground.',
+  },
+  {
+    slug: 'galaxian',
+    name: 'Galaxian',
+    icon: '🛸',
+    description: 'Defend against alien formations that break ranks and dive-bomb your ship.',
   },
   {
     slug: 'rally-x',
@@ -103,11 +108,11 @@ const games = [
 
 .subtitle {
   margin-top: 4px;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #4a4a6a;
+  color: #94a3b8;
 }
 
 .grid {
