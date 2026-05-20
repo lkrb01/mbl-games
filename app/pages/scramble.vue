@@ -104,12 +104,13 @@ let animId = 0, lastTs = 0
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function lerpY(pts: Pt[], x: number): number {
   for (let i = 0; i < pts.length - 1; i++) {
-    if (x >= pts[i].x && x <= pts[i + 1].x) {
-      const t = (x - pts[i].x) / (pts[i + 1].x - pts[i].x)
-      return pts[i].y + t * (pts[i + 1].y - pts[i].y)
+    const a = pts[i]!, b = pts[i + 1]!
+    if (x >= a.x && x <= b.x) {
+      const t = (x - a.x) / (b.x - a.x)
+      return a.y + t * (b.y - a.y)
     }
   }
-  return pts.length ? pts[pts.length - 1].y : H / 2
+  return pts.length ? pts[pts.length - 1]!.y : H / 2
 }
 
 function zoneIdx() { return Math.min(Math.floor(scrollX / ZONE_LEN), NUM_ZONES - 1) }
@@ -124,9 +125,9 @@ function burst(x: number, y: number, col: string, n = 12) {
 
 function addTerrainSeg() {
   const zi = zoneIdx()
-  const zt = ZT[zi]
-  const lastG = groundPts[groundPts.length - 1]
-  const lastC = ceilPts[ceilPts.length - 1]
+  const zt = ZT[zi]!
+  const lastG = groundPts[groundPts.length - 1]!
+  const lastC = ceilPts[ceilPts.length - 1]!
   const nx = lastG.x + SEG_W
 
   const tgY = zt.gLo + Math.random() * (zt.gHi - zt.gLo)
@@ -160,8 +161,8 @@ function initTerrain() {
   for (let x = 0; x <= W + SEG_W * 4; x += SEG_W) {
     groundPts.push({ x, y: gy + (Math.random() - 0.5) * 16 })
     ceilPts.push({   x, y: cy + (Math.random() - 0.5) * 8  })
-    gy = groundPts[groundPts.length-1].y
-    cy = ceilPts[ceilPts.length-1].y
+    gy = groundPts[groundPts.length-1]!.y
+    cy = ceilPts[ceilPts.length-1]!.y
   }
   segsSinceObj = 0
   baseSpawned  = false
@@ -236,10 +237,10 @@ function update(dt: number) {
   for (const o of gobjs)     o.x -= sdx
 
   // Prune off-screen terrain (keep pts[0].x <= 0)
-  while (groundPts.length > 1 && groundPts[1].x < 0) { groundPts.shift(); ceilPts.shift() }
+  while (groundPts.length > 1 && groundPts[1]!.x < 0) { groundPts.shift(); ceilPts.shift() }
 
   // Extend terrain ahead
-  while (groundPts[groundPts.length - 1].x < W + SEG_W * 2) addTerrainSeg()
+  while (groundPts[groundPts.length - 1]!.x < W + SEG_W * 2) addTerrainSeg()
 
   // Prune off-screen objects
   gobjs = gobjs.filter(o => o.x > -70)
@@ -422,25 +423,24 @@ function draw(ctx: CanvasRenderingContext2D) {
   // Terrain drawing helper
   function drawTerrain(pts: Pt[], fromTop: boolean) {
     if (pts.length < 2) return
+    const first = pts[0]!, last = pts[pts.length - 1]!
     ctx.fillStyle = '#1b2e1b'
     ctx.beginPath()
     if (fromTop) {
-      ctx.moveTo(pts[0].x, 0)
+      ctx.moveTo(first.x, 0)
       for (const p of pts) ctx.lineTo(p.x, p.y)
-      ctx.lineTo(pts[pts.length-1].x, 0)
+      ctx.lineTo(last.x, 0)
     } else {
-      ctx.moveTo(pts[0].x, H)
+      ctx.moveTo(first.x, H)
       for (const p of pts) ctx.lineTo(p.x, p.y)
-      ctx.lineTo(pts[pts.length-1].x, H)
+      ctx.lineTo(last.x, H)
     }
     ctx.closePath()
     ctx.fill()
     ctx.strokeStyle = '#3a6e3a'
     ctx.lineWidth = 2
     ctx.beginPath()
-    for (let i = 0; i < pts.length; i++) {
-      i === 0 ? ctx.moveTo(pts[i].x, pts[i].y) : ctx.lineTo(pts[i].x, pts[i].y)
-    }
+    for (const p of pts) ctx.lineTo(p.x, p.y)
     ctx.stroke()
   }
   drawTerrain(ceilPts, true)
