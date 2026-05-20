@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <nav class="nav">
-      <NuxtLink to="/" class="back">← Back</NuxtLink>
+      <NuxtLink to="/games" class="back">← Back</NuxtLink>
       <button class="mute-btn" :title="muted ? 'Unmute' : 'Mute'" @click="toggleMute">{{ muted ? '🔇' : '🔊' }}</button>
     </nav>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <nav class="nav">
-      <NuxtLink to="/" class="back">← Back</NuxtLink>
+      <NuxtLink to="/games" class="back">← Back</NuxtLink>
       <div style="display:flex;align-items:center;gap:10px">
         <button class="mute-btn" :title="sound.muted.value ? 'Unmute' : 'Mute'" @click="sound.toggleMute()">{{ sound.muted.value ? '🔇' : '🔊' }}</button>
         <span class="score">⭐ {{ correct }}</span>

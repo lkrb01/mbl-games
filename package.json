@@ -1,7 +1,14 @@
 {
-  "name": "mbl-games",
+  "name": "nuxt-mbl-games",
+  "version": "1.0.0",
+  "description": "MBL Games — a collection of browser games as a portable Nuxt 4 layer",
+  "main": "./nuxt.config.ts",
   "type": "module",
-  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lkrb01/mbl-games.git"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

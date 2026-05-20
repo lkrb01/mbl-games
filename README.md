@@ -33,25 +33,51 @@ All audio is generated at runtime — no audio files or external assets.
 - **Web Audio API** — all sound and music, zero audio files
 - No UI component libraries, no game engines, no audio dependencies
 
+## Use as a Nuxt layer
+
+The package is structured as a portable **Nuxt 4 layer**. Drop it into any Nuxt 4 project and all games appear at `/games/*` without touching your own routes.
+
+### From GitHub (no npm publish needed)
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  extends: ['github:lkrb01/mbl-games'],
+})
+```
+
+### From a local path
+
+```ts
+export default defineNuxtConfig({
+  extends: ['../mbl-games'],
+})
+```
+
+Games will be available at `/games`, `/games/snake`, `/games/scramble`, etc. Your own `/` page is untouched — the layer only adds routes under `/games/`.
+
 ## Project structure
 
 ```
 app/
   pages/
-    index.vue             # Home screen / game picker
-    snake.vue
-    memory.vue
-    quiz.vue
-    2048.vue
-    space-invaders.vue
-    rally-x.vue
-    platformer.vue
-    animal-count.vue
-    spell-the-animal.vue
+    index.vue                  # Redirects to /games (override in your own app)
+    games/
+      index.vue                # Game picker hub  →  /games
+      snake.vue                #                  →  /games/snake
+      memory.vue
+      quiz.vue
+      2048.vue
+      space-invaders.vue
+      rally-x.vue
+      platformer.vue
+      scramble.vue
+      animal-count.vue
+      spell-the-animal.vue
   composables/
-    _audioState.ts        # Shared AudioContext + mute state
-    useSound.ts           # Sound effects
-    useMusic.ts           # Background music sequencer + track data
+    _audioState.ts             # Shared AudioContext + mute state
+    useSound.ts                # Sound effects
+    useMusic.ts                # Background music sequencer + track data
 public/
   mbl-logo.svg
 ```
