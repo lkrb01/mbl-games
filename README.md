@@ -16,6 +16,8 @@ A collection of browser games built with Nuxt 4 and Vue 3. No external game libr
 | 🚀 **Scramble** | Canvas | Side-scrolling shooter — fly through enemy terrain, bomb fuel depots to keep going, reach the base |
 | 🔢 **Animal Count** | DOM | Count animals and tap the right number (great for small children) |
 | 🔤 **Spell the Animal** | DOM | Tap letters in order to spell the animal's name |
+| 👾 **Galaxian** | Canvas | Fixed shooter — dive-bombing alien formations, survive as long as you can |
+| ⛏️ **Dig Dug** | Canvas | Dig tunnels, inflate enemies to pop them, drop boulders to crush them |
 
 ## Audio
 
@@ -29,7 +31,7 @@ All audio is generated at runtime — no audio files or external assets.
 
 - **[Nuxt 4](https://nuxt.com)** with the `app/` directory layout
 - **Vue 3** Composition API — `<script setup>`, `ref`, `computed`, `watch`
-- **Canvas API** — Snake, Space Invaders, Platformer, Rally-X
+- **Canvas API** — Snake, Space Invaders, Platformer, Rally-X, Scramble, Galaxian, Dig Dug
 - **Web Audio API** — all sound and music, zero audio files
 - No UI component libraries, no game engines, no audio dependencies
 
@@ -74,6 +76,8 @@ app/
       scramble.vue
       animal-count.vue
       spell-the-animal.vue
+      galaxian.vue
+      dig-dug.vue
   composables/
     _audioState.ts             # Shared AudioContext + mute state
     useSound.ts                # Sound effects

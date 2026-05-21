@@ -72,6 +72,12 @@ const games = [
     description: 'Fly through scrolling enemy terrain, bomb fuel depots to stay airborne, and destroy the base.',
   },
   {
+    slug: 'dig-dug',
+    name: 'Dig Dug',
+    icon: '⛏️',
+    description: 'Tunnel through the earth, inflate enemies with your pump, and drop boulders to crush them.',
+  },
+  {
     slug: 'animal-count',
     name: 'Animal Count',
     icon: '🔢',
