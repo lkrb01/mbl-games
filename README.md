@@ -6,6 +6,7 @@ A collection of browser games built with Nuxt 4 and Vue 3. No external game libr
 
 | Game | Type | Description |
 |------|------|-------------|
+| 🃏 **Cards Against Humanity** | Multiplayer | Party game for horrible people — fill in the blanks, the most wrong answer wins. Public & private rooms, shareable links, solo demo with bots |
 | 🐍 **Snake** | Canvas | Classic snake — eat food, grow longer, don't hit yourself |
 | 🃏 **Memory** | DOM | Flip cards and match all pairs in as few moves as possible |
 | 🧠 **Quiz** | DOM | 140 questions across 7 categories, 10 per round |
@@ -66,25 +67,36 @@ app/
     index.vue                  # Redirects to /games (override in your own app)
     games/
       index.vue                # Game picker hub  →  /games
+      cah/
+        index.vue              # CAH lobby        →  /games/cah
+        [roomId].vue           # CAH game room    →  /games/cah/:id
       snake.vue                #                  →  /games/snake
-      memory.vue
-      quiz.vue
-      2048.vue
-      space-invaders.vue
-      rally-x.vue
-      platformer.vue
-      scramble.vue
-      animal-count.vue
-      spell-the-animal.vue
-      galaxian.vue
-      dig-dug.vue
+      memory.vue  …            # (all other games)
+  components/
+    cah/                       # CAH-specific UI components
   composables/
     _audioState.ts             # Shared AudioContext + mute state
-    useSound.ts                # Sound effects
+    useSound.ts                # Sound effects (includes CAH sounds)
     useMusic.ts                # Background music sequencer + track data
+    useCAHSocket.ts            # WebSocket lifecycle + reconnect
+    useCAHGame.ts              # Reactive game state + actions
+server/
+  routes/games/cah/ws.ts      # WebSocket endpoint — full game state machine
+  api/games/cah/
+    rooms.get.ts               # List public rooms
+    rooms.post.ts              # Create a room
+    rooms/[roomId].get.ts      # Room info (join validation)
+  utils/
+    cahCards.ts                # Load + shuffle card packs
+    cahRoomStore.ts            # In-memory room store, bot timers, broadcast
+shared/
+  types/cah.ts                 # Shared TypeScript types (room, player, messages…)
 public/
+  cards/cah-base.json          # CAH base card set (90 black, 460 white)
   mbl-logo.svg
 ```
+
+> **Note on multiplayer hosting:** Cards Against Humanity uses WebSockets and an in-memory room store — it requires a persistent Node.js process. The Docker image and Fly.io deployment satisfy this. Static/edge deployments will serve the UI but the game will not connect.
 
 ## Docker
 

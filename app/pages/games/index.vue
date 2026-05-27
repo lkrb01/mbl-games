@@ -18,6 +18,12 @@
 <script setup lang="ts">
 const games = [
   {
+    slug: 'cah',
+    name: 'Cards Against Humanity',
+    icon: '🃏',
+    description: 'A party game for horrible people. Create or join a room and fill in the blanks — the most wrong answer wins.',
+  },
+  {
     slug: 'snake',
     name: 'Snake',
     icon: '🐍',

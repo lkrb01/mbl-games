@@ -118,5 +118,27 @@ export function useSound() {
     gameOver: () => play((ctx, t) => {
       ;[392, 330, 294, 220].forEach((f, i) => tone(ctx, f, t + i * 0.14, 0.18, 'sawtooth', 0.14))
     }),
+
+    // Cards Against Humanity
+    // Card deal — rapid soft paper shuffles
+    cahDeal: () => play((ctx, t) => {
+      for (let i = 0; i < 6; i++) noise(ctx, t + i * 0.045, 0.035, 0.12)
+    }),
+    // Card selected from hand — crisp tap
+    cahSelect: () => play((ctx, t) => tone(ctx, 480, t, 0.05, 'triangle', 0.11)),
+    // Submission played — soft thud as card hits the table
+    cahPlay: () => play((ctx, t) => {
+      noise(ctx, t, 0.04, 0.2)
+      tone(ctx, 180, t, 0.06, 'sine', 0.12)
+    }),
+    // Submission revealed — card flip
+    cahReveal: () => play((ctx, t) => {
+      tone(ctx, 300, t, 0.03, 'triangle', 0.09)
+      tone(ctx, 480, t + 0.03, 0.07, 'triangle', 0.1)
+    }),
+    // Round win fanfare — ascending cheerful arpeggio
+    cahRoundWin: () => play((ctx, t) => {
+      ;[392, 494, 587, 740, 880].forEach((f, i) => tone(ctx, f, t + i * 0.09, 0.2, 'triangle', 0.18))
+    }),
   }
 }
