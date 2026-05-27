@@ -20,7 +20,7 @@ import {
   getRoom,
   reconnectPlayer,
   removePlayer,
-  send,
+  sendPeer,
   setInterval_,
   setPhase,
   setTimer,
@@ -65,7 +65,7 @@ export default defineWebSocketHandler({
 
     const state = getRoom(roomId)
     if (!state) {
-      send(peer, { type: 'ERROR', code: 'ROOM_NOT_FOUND', message: 'Room not found.' })
+      sendPeer(peer, { type: 'ERROR', code: 'ROOM_NOT_FOUND', message: 'Room not found.' })
       peer.close()
       return
     }
@@ -79,11 +79,11 @@ export default defineWebSocketHandler({
       clearTimerByKey(state, `remove-${playerId}`)
       const player = reconnectPlayer(state, peer, playerId)
       if (!player) {
-        send(peer, { type: 'ERROR', code: 'JOIN_FAILED', message: 'Could not reconnect.' })
+        sendPeer(peer, { type: 'ERROR', code: 'JOIN_FAILED', message: 'Could not reconnect.' })
         peer.close()
         return
       }
-      send(peer, { type: 'WELCOME', playerId, roomId })
+      sendPeer(peer, { type: 'WELCOME', playerId, roomId })
       unicast(state, playerId, { type: 'STATE_UPDATE', state: buildClientState(state, playerId) })
       broadcast(state, { type: 'PLAYER_JOINED', player }, playerId)
       return
@@ -91,19 +91,19 @@ export default defineWebSocketHandler({
 
     // ── New player joining ───────────────────────────────────────────────────
     if (state.room.players.filter((p) => !p.isBot).length >= state.room.config.maxPlayers) {
-      send(peer, { type: 'ERROR', code: 'ROOM_FULL', message: 'This room is full.' })
+      sendPeer(peer, { type: 'ERROR', code: 'ROOM_FULL', message: 'This room is full.' })
       peer.close()
       return
     }
 
     if (state.room.phase !== Phase.LOBBY) {
-      send(peer, { type: 'ERROR', code: 'GAME_IN_PROGRESS', message: 'A game is already in progress.' })
+      sendPeer(peer, { type: 'ERROR', code: 'GAME_IN_PROGRESS', message: 'A game is already in progress.' })
       peer.close()
       return
     }
 
     const player = addPlayer(state, peer, playerId, playerName)
-    send(peer, { type: 'WELCOME', playerId, roomId })
+    sendPeer(peer, { type: 'WELCOME', playerId, roomId })
     unicast(state, playerId, { type: 'STATE_UPDATE', state: buildClientState(state, playerId) })
     broadcast(state, { type: 'PLAYER_JOINED', player }, playerId)
   },

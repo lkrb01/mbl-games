@@ -143,8 +143,8 @@ const cy = (r: number) => r * CELL
 const toCol = (x: number) => Math.round(x / CELL)
 const toRow = (y: number) => Math.round(y / CELL)
 const inBounds = (c: number, r: number) => c >= 0 && c < COLS && r >= 0 && r < ROWS
-const isDirt = (c: number, r: number) => inBounds(c, r) && grid[r][c]
-const isOpen = (c: number, r: number) => inBounds(c, r) && !grid[r][c]
+const isDirt = (c: number, r: number) => inBounds(c, r) && grid[r]![c]
+const isOpen = (c: number, r: number) => inBounds(c, r) && !grid[r]![c]
 
 function dd(d: Dir): [number, number] {
   if (d === 'up') return [0, -1]
@@ -157,12 +157,12 @@ function dd(d: Dir): [number, number] {
 function buildGrid() {
   grid = Array.from({ length: ROWS }, () => Array(COLS).fill(true))
   // Top row always open (surface)
-  for (let c = 0; c < COLS; c++) grid[0][c] = false
+  for (let c = 0; c < COLS; c++) grid[0]![c] = false
 }
 
 function placeBoulders() {
   boulders = []
-  const pos = [
+  const pos: [number, number][] = [
     [4,2],[10,2],[16,2],[22,2],[27,2],
     [2,6],[7,7],[13,6],[19,7],[25,6],[28,7],
     [5,11],[11,10],[16,11],[22,10],[27,11],
@@ -183,7 +183,7 @@ function spawnEnemies() {
     const col = i % 2 === 0 ? 0 : COLS - 1
     const row = 2 + i * 4
     const type: 'pooka' | 'fygar' = i % 3 === 2 ? 'fygar' : 'pooka'
-    if (inBounds(col, row)) grid[row][col] = false
+    if (inBounds(col, row)) grid[row]![col] = false
     enemies.push({
       id: eid++, type,
       x: cx(col), y: cy(row), tx: cx(col), ty: cy(row),
@@ -206,7 +206,7 @@ function resetPlayer() {
   pdir = 'right'; pmoving = false
   pdead = false; pdeadT = 0; pinvT = 1.5
   ppump = false; ppumpLen = 0
-  if (inBounds(pcol, prow)) grid[prow][pcol] = false
+  if (inBounds(pcol, prow)) grid[prow]![pcol] = false
 }
 
 function initGame() {
@@ -301,7 +301,7 @@ function updatePlayer(dt: number) {
         if (!blocked) {
           pdir = d; pmoving = true
           ptx = cx(nc); pty = cy(nr)
-          if (grid[nr][nc]) { grid[nr][nc] = false; sound.eat() }
+          if (grid[nr]![nc]) { grid[nr]![nc] = false; sound.eat() }
         }
       }
     }
@@ -476,7 +476,7 @@ function enemyChooseDir(e: Enemy) {
     const [ddc, ddr] = dd(d)
     const nnc = e.col + ddc, nnr = e.row + ddr
     if (inBounds(nnc, nnr)) {
-      if (isDirt(nnc, nnr)) grid[nnr][nnc] = false
+      if (isDirt(nnc, nnr)) grid[nnr]![nnc] = false
       enemyMove(e, d); return
     }
   }
@@ -487,7 +487,7 @@ function enemyMove(e: Enemy, d: Dir) {
   const nc = e.col + dc, nr = e.row + dr
   if (!inBounds(nc, nr)) return
   if (isDirt(nc, nr) && !e.ghosting) return
-  if (isDirt(nc, nr) && e.ghosting) grid[nr][nc] = false
+  if (isDirt(nc, nr) && e.ghosting) grid[nr]![nc] = false
   e.dir = d; e.tx = cx(nc); e.ty = cy(nr)
 }
 
@@ -551,7 +551,7 @@ function draw() {
   for (let b = 0; b < 4; b++) {
     const y0 = Math.round(b * H / 4)
     const y1 = Math.round((b + 1) * H / 4)
-    c.fillStyle = bandColors[b].tunnel
+    c.fillStyle = bandColors[b]!.tunnel
     c.fillRect(0, y0, W, y1 - y0)
   }
 
@@ -559,9 +559,9 @@ function draw() {
   for (let r = 0; r < ROWS; r++) {
     const band = bandOf(r)
     for (let col = 0; col < COLS; col++) {
-      if (!grid[r][col]) continue
+      if (!grid[r]![col]) continue
       const x = cx(col), y = cy(r)
-      c.fillStyle = bandColors[band].dirt
+      c.fillStyle = bandColors[band]!.dirt
       c.fillRect(x, y, CELL, CELL)
       c.fillStyle = 'rgba(0,0,0,0.22)'
       c.fillRect(x + 3, y + 3, 2, 2)
@@ -724,7 +724,7 @@ function drawOverlay(c: CanvasRenderingContext2D, title: string, lines: string[]
   c.fillText(title, W / 2, H / 2 - 50)
   c.fillStyle = '#e2e8f0'
   c.font = '13px monospace'
-  for (let i = 0; i < lines.length; i++) c.fillText(lines[i], W / 2, H / 2 - 10 + i * 22)
+  for (let i = 0; i < lines.length; i++) c.fillText(lines[i]!, W / 2, H / 2 - 10 + i * 22)
   c.fillStyle = '#64748b'
   c.font = '13px monospace'
   c.fillText('Press Space to start', W / 2, H / 2 + lines.length * 22 + 20)

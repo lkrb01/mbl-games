@@ -94,7 +94,7 @@ defineEmits<{ click: [] }>()
 
 .winner-badge {
   position: absolute;
-  top: 8px;
+  bottom: 8px;
   right: 10px;
   font-size: 1.2rem;
 }

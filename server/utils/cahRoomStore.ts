@@ -201,7 +201,7 @@ export function removePlayer(state: RoomState, playerId: string): void {
 
 // ── Messaging ──────────────────────────────────────────────────────────────────
 
-export function send(peer: Peer, msg: ServerMessage): void {
+export function sendPeer(peer: Peer, msg: ServerMessage): void {
   peer.send(JSON.stringify(msg))
 }
 
