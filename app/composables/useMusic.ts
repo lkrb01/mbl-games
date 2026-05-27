@@ -190,6 +190,21 @@ const TRACKS: Record<string, Track> = {
     ],
   },
 
+  // ── Soccer: energetic E major stadium anthem, 150 BPM ────────────────────
+  soccer: {
+    bpm: 150, loop: 16,
+    voices: [
+      { type: 'sawtooth', vol: 0.10, notes: [
+        [0,1,40],[2,1,40],[4,1,47],[6,1,45],
+        [8,1,40],[10,1,40],[12,1,45],[14,1,47],
+      ]},
+      { type: 'square', vol: 0.08, notes: [
+        [0,1,64],[1,1,66],[2,2,68],[4,1,69],[5,1,68],[6,2,66],
+        [8,2,71],[10,1,69],[11,1,68],[12,2,66],[14,2,64],
+      ]},
+    ],
+  },
+
   // ── Rally-X: driving D minor, 164 BPM ────────────────────────────────────
   'rally-x': {
     bpm: 164, loop: 16,

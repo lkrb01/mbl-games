@@ -84,6 +84,12 @@ const games = [
     description: 'Tunnel through the earth, inflate enemies with your pump, and drop boulders to crush them.',
   },
   {
+    slug: 'soccer',
+    name: 'Soccer',
+    icon: '⚽',
+    description: 'Penalty shootout, free kick challenge or goalkeeper — pick your mode and hit the pitch.',
+  },
+  {
     slug: 'animal-count',
     name: 'Animal Count',
     icon: '🔢',
