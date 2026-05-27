@@ -6,9 +6,26 @@
 
     <main class="grid">
       <NuxtLink v-for="game in games" :key="game.slug" :to="`/games/${game.slug}`" class="card">
-        <div class="card-icon">{{ game.icon }}</div>
-        <h2 class="card-title">{{ game.name }}</h2>
-        <p class="card-desc">{{ game.description }}</p>
+
+        <div class="card-icon-row">
+          <div class="card-icon">{{ game.icon }}</div>
+          <div v-if="game.slug === 'cah'" class="lang-toggle" @click.stop.prevent>
+            <button
+              class="lang-btn"
+              :class="{ active: cahLang === 'en' }"
+              title="English"
+              @click.stop.prevent="setCahLang('en')"
+            >🇬🇧</button>
+            <button
+              class="lang-btn"
+              :class="{ active: cahLang === 'sv' }"
+              title="Svenska"
+              @click.stop.prevent="setCahLang('sv')"
+            >🇸🇪</button>
+          </div>
+        </div>
+        <h2 class="card-title">{{ game.slug === 'cah' ? cahContent.name : game.name }}</h2>
+        <p class="card-desc">{{ game.slug === 'cah' ? cahContent.desc : game.description }}</p>
         <span class="card-cta">Play →</span>
       </NuxtLink>
     </main>
@@ -16,12 +33,37 @@
 </template>
 
 <script setup lang="ts">
+// ── CAH language toggle ────────────────────────────────────────────────────────
+const cahLang = ref<'en' | 'sv'>('en')
+onMounted(() => {
+  cahLang.value = (localStorage.getItem('cah-lang') as 'en' | 'sv') ?? 'en'
+})
+
+const CAH_CONTENT = {
+  en: {
+    name: 'Appropriately Disgusting',
+    desc: 'Unfiltered. Unapologetic. Unforgettable. Create or join a room and fill in the blanks — the most wrong answer wins.',
+  },
+  sv: {
+    name: 'Lagom Äckligt',
+    desc: 'Ofiltrerat. Oursäktat. Oförglömligt. Skapa eller gå med i ett rum och fyll i luckorna — det mest fel svar vinner.',
+  },
+}
+
+const cahContent = computed(() => CAH_CONTENT[cahLang.value])
+
+function setCahLang(lang: 'en' | 'sv') {
+  cahLang.value = lang
+  localStorage.setItem('cah-lang', lang)
+}
+
+// ── Game list ──────────────────────────────────────────────────────────────────
 const games = [
   {
     slug: 'cah',
-    name: 'Cards Against Humanity',
+    name: '',        // overridden by cahContent
     icon: '🃏',
-    description: 'A party game for horrible people. Create or join a room and fill in the blanks — the most wrong answer wins.',
+    description: '', // overridden by cahContent
   },
   {
     slug: 'snake',
@@ -182,5 +224,37 @@ const games = [
   font-weight: 600;
   color: #818cf8;
   margin-top: 4px;
+}
+
+.card-icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lang-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.lang-btn {
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 4px 6px;
+  background: #0f0f1a;
+  border: 1px solid #2d2d44;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0.4;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.lang-btn:hover {
+  opacity: 0.75;
+}
+
+.lang-btn.active {
+  opacity: 1;
+  border-color: #818cf8;
 }
 </style>

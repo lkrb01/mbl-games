@@ -4,23 +4,21 @@
     <!-- Status bar -->
     <div class="hand-status">
       <template v-if="hasSubmitted">
-        <span class="submitted-msg">✓ Cards submitted — waiting for others…</span>
-        <span class="submitted-count">
-          {{ submittedCount }} / {{ totalPlayers }} played
-        </span>
+        <span class="submitted-msg">{{ t.submitted }}</span>
+        <span class="submitted-count">{{ t.played(submittedCount, totalPlayers) }}</span>
       </template>
       <template v-else-if="canPlay">
         <span class="pick-instruction">
-          Pick
+          {{ t.pick(blackCard.pick) }}
           <strong>{{ blackCard.pick }}</strong>
-          card{{ blackCard.pick > 1 ? 's' : '' }}
+          {{ t.card(blackCard.pick) }}
         </span>
         <span class="selected-count" :class="{ ready: selectedCards.length === blackCard.pick }">
-          {{ selectedCards.length }}/{{ blackCard.pick }} selected
+          {{ t.selected(selectedCards.length, blackCard.pick) }}
         </span>
       </template>
       <template v-else>
-        <span class="czar-msg">⚖️ You are the Card Czar — sit back and wait!</span>
+        <span class="czar-msg">{{ t.czar }}</span>
       </template>
     </div>
 
@@ -45,8 +43,8 @@
       :disabled="selectedCards.length !== blackCard.pick"
       @click="$emit('submit')"
     >
-      <span v-if="selectedCards.length === blackCard.pick">Play {{ blackCard.pick > 1 ? 'cards' : 'card' }} →</span>
-      <span v-else>Select {{ blackCard.pick - selectedCards.length }} more…</span>
+      <span v-if="selectedCards.length === blackCard.pick">{{ t.playBtn(blackCard.pick) }}</span>
+      <span v-else>{{ t.selectMore(blackCard.pick - selectedCards.length) }}</span>
     </button>
 
   </div>
@@ -55,7 +53,7 @@
 <script setup lang="ts">
 import type { BlackCard, WhiteCard } from '../../../shared/types/cah'
 
-defineProps<{
+const props = defineProps<{
   hand: WhiteCard[]
   selectedCards: string[]
   blackCard: BlackCard
@@ -64,7 +62,32 @@ defineProps<{
   hasSubmitted: boolean
   submittedCount: number
   totalPlayers: number
+  lang?: 'en' | 'sv'
 }>()
+
+const STRINGS = {
+  en: {
+    submitted:   '✓ Cards submitted — waiting for others…',
+    played:      (n: number, t: number) => `${n} / ${t} played`,
+    pick:        (n: number) => `Pick`,
+    card:        (n: number) => `card${n > 1 ? 's' : ''}`,
+    selected:    (n: number, t: number) => `${n}/${t} selected`,
+    czar:        '⚖️ You are the Card Czar — sit back and wait!',
+    playBtn:     (n: number) => `Play ${n > 1 ? 'cards' : 'card'} →`,
+    selectMore:  (n: number) => `Select ${n} more…`,
+  },
+  sv: {
+    submitted:   '✓ Kort spelade — väntar på andra…',
+    played:      (n: number, t: number) => `${n} / ${t} spelade`,
+    pick:        (n: number) => `Välj`,
+    card:        (n: number) => `kort`,
+    selected:    (n: number, t: number) => `${n}/${t} valda`,
+    czar:        '⚖️ Du är Kortcesar — luta dig tillbaka och vänta!',
+    playBtn:     (n: number) => `Spela kort →`,
+    selectMore:  (n: number) => `Välj ${n} till…`,
+  },
+}
+const t = computed(() => STRINGS[props.lang ?? 'en'])
 
 defineEmits<{
   toggleCard: [cardId: string]

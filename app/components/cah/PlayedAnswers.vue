@@ -3,10 +3,10 @@
 
     <!-- Instruction for the Czar -->
     <p v-if="canJudge && !winnerId" class="czar-instruction">
-      {{ allRevealed ? '👑 Tap a card to crown the winner' : '⚖️ Tap each card to reveal it' }}
+      {{ allRevealed ? t.crownWinner : t.revealCards }}
     </p>
     <p v-else-if="!canJudge && !winnerId" class="waiting-instruction">
-      Waiting for {{ czarName }} to judge…
+      {{ t.waitingJudge(czarName) }}
     </p>
 
     <!-- Submissions grid -->
@@ -29,7 +29,7 @@
           <template v-if="!sub.revealed">
             <div class="card-face face-down">
               <span class="face-down-icon">🃏</span>
-              <span v-if="canJudge" class="reveal-hint">tap to reveal</span>
+              <span v-if="canJudge" class="reveal-hint">{{ t.tapReveal }}</span>
             </div>
           </template>
 
@@ -50,7 +50,7 @@
 
         <!-- Winner label -->
         <div v-if="sub.playerId === winnerId && players" class="winner-label">
-          {{ players.find(p => p.id === sub.playerId)?.name ?? 'Winner' }}
+          {{ players.find(p => p.id === sub.playerId)?.name ?? t.winner }}
         </div>
 
         <!-- Pick as winner button (shown when all revealed, czar, no winner yet) -->
@@ -59,7 +59,7 @@
           class="pick-btn"
           @click.stop="$emit('pickWinner', sub.playerId)"
         >
-          👑 Pick
+          {{ t.pick }}
         </button>
       </div>
     </div>
@@ -77,7 +77,28 @@ const props = defineProps<{
   czarName: string
   winnerId: string | null
   players?: Player[]
+  lang?: 'en' | 'sv'
 }>()
+
+const STRINGS = {
+  en: {
+    crownWinner:   '👑 Tap a card to crown the winner',
+    revealCards:   '⚖️ Tap each card to reveal it',
+    waitingJudge:  (name: string) => `Waiting for ${name} to judge…`,
+    tapReveal:     'tap to reveal',
+    pick:          '👑 Pick',
+    winner:        'Winner',
+  },
+  sv: {
+    crownWinner:   '👑 Tryck på ett kort för att kröna vinnaren',
+    revealCards:   '⚖️ Tryck på varje kort för att avslöja det',
+    waitingJudge:  (name: string) => `Väntar på att ${name} ska döma…`,
+    tapReveal:     'tryck för att avslöja',
+    pick:          '👑 Välj',
+    winner:        'Vinnare',
+  },
+}
+const t = computed(() => STRINGS[props.lang ?? 'en'])
 
 const emit = defineEmits<{
   reveal: [index: number]

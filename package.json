@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-mbl-games",
+  "name": "mbl-games",
   "version": "1.0.0",
   "description": "MBL Games — a collection of browser games as a portable Nuxt 4 layer",
   "main": "./nuxt.config.ts",
@@ -9,6 +9,13 @@
     "type": "git",
     "url": "git+https://github.com/lkrb01/mbl-games.git"
   },
+  "files": [
+    "app",
+    "server",
+    "shared",
+    "public/cards",
+    "nuxt.config.ts"
+  ],
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -17,6 +24,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "nanoid": "^3.3.12",
     "nuxt": "^4.4.5",
     "vue": "^3.5.34",
     "vue-router": "^5.0.6"

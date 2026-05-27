@@ -3,8 +3,8 @@
 
     <!-- Nav -->
     <nav class="nav">
-      <NuxtLink to="/games/cah" class="back">← Lobby</NuxtLink>
-      <span class="nav-title">Cards Against Humanity</span>
+      <NuxtLink to="/games/cah" class="back">{{ t.lobby }}</NuxtLink>
+      <span class="nav-title">{{ gameTitle }}</span>
       <div class="nav-right">
         <button class="mute-btn" :title="sound.muted.value ? 'Unmute' : 'Mute'" @click="sound.toggleMute()">
           {{ sound.muted.value ? '🔇' : '🔊' }}
@@ -16,7 +16,7 @@
     <Transition name="banner">
       <div v-if="status === 'disconnected' || status === 'connecting'" class="reconnect-banner">
         <div class="spinner small" />
-        {{ status === 'connecting' ? 'Connecting…' : 'Connection lost — reconnecting…' }}
+        {{ status === 'connecting' ? t.connecting : t.connLost }}
       </div>
     </Transition>
 
@@ -24,12 +24,12 @@
     <div v-if="!room" class="center-msg">
       <div v-if="status === 'error'" class="error-state">
         <p class="big-icon">💔</p>
-        <p>Could not connect to the room.</p>
-        <NuxtLink to="/games/cah" class="back-link">Back to lobby →</NuxtLink>
+        <p>{{ t.noConnect }}</p>
+        <NuxtLink to="/games/cah" class="back-link">{{ t.backLobby }}</NuxtLink>
       </div>
       <div v-else class="loading-state">
         <div class="spinner" />
-        <p>Connecting…</p>
+        <p>{{ t.connecting }}</p>
       </div>
     </div>
 
@@ -39,6 +39,7 @@
       :room="room"
       :my-player-id="playerId"
       :is-host="myPlayer?.isHost ?? false"
+      :lang="isSv ? 'sv' : 'en'"
       @start="startGame"
       @kick="kickPlayer"
     />
@@ -54,7 +55,7 @@
 
       <!-- Round number -->
       <p v-if="currentRound" class="round-label">
-        Round {{ currentRound.number }}
+        {{ t.round(currentRound.number) }}
       </p>
 
       <!-- Black card -->
@@ -67,9 +68,7 @@
       <!-- ── READING ──────────────────────────────────────────────────────── -->
       <div v-if="room.phase === 'READING'" class="phase-message reading">
         <div class="spinner small" />
-        <p>
-          {{ czarName }} is the Card Czar — everyone pick your best answer…
-        </p>
+        <p>{{ t.czarLine(czarName) }}</p>
       </div>
 
       <!-- ── ANSWERING ───────────────────────────────────────────────────── -->
@@ -83,6 +82,7 @@
         :has-submitted="hasSubmitted"
         :submitted-count="currentRound.submissions.length"
         :total-players="nonCzarCount"
+        :lang="isSv ? 'sv' : 'en'"
         @toggle-card="wrappedToggle"
         @submit="playCards"
       />
@@ -96,6 +96,7 @@
         :czar-name="czarName"
         :winner-id="currentRound.winnerId"
         :players="room.players"
+        :lang="isSv ? 'sv' : 'en'"
         @reveal="revealSubmission"
         @pick-winner="pickWinner"
       />
@@ -104,10 +105,8 @@
       <Transition name="scores">
         <div v-if="room.phase === 'SCORES'" class="scores-overlay">
           <div class="scores-card">
-            <p class="scores-round">Round {{ currentRound?.number }}</p>
-            <p class="scores-winner-line">
-              🏆 <strong>{{ roundWinnerName }}</strong> wins the round!
-            </p>
+            <p class="scores-round">{{ t.round(currentRound?.number ?? 0) }}</p>
+            <p class="scores-winner-line" v-html="t.winsRound(`<strong>${roundWinnerName}</strong>`)" />
 
             <!-- Winning cards -->
             <div v-if="winningCards.length" class="winning-cards">
@@ -123,7 +122,7 @@
             <div class="points-progress">
               <template v-for="player in [...room.players].sort((a, b) => b.score - a.score)" :key="player.id">
                 <div class="progress-row">
-                  <span class="progress-name">{{ player.id === playerId ? 'You' : player.name }}</span>
+                  <span class="progress-name">{{ player.id === playerId ? t.you : player.name }}</span>
                   <div class="progress-bar-track">
                     <div
                       class="progress-bar-fill"
@@ -140,10 +139,10 @@
               class="next-btn"
               @click="nextRound"
             >
-              Next round →
+              {{ t.nextRound }}
             </button>
             <p v-else class="next-waiting">
-              Waiting for host to continue…
+              {{ t.waitingHost }}
             </p>
           </div>
         </div>
@@ -166,6 +165,7 @@
       v-else-if="room.phase === 'GAME_OVER'"
       :players="room.players"
       :my-player-id="playerId"
+      :lang="isSv ? 'sv' : 'en'"
     />
 
     <!-- Error toast -->
@@ -194,10 +194,44 @@ const {
 
 // ── Derived helpers ──────────────────────────────────────────────────────────
 
+const isSv = computed(() => room.value?.config.packs.includes('swedish') ?? false)
+
+const gameTitle = computed(() => isSv.value ? 'Lagom Äckligt' : 'Appropriately Disgusting')
+
+const UI = {
+  en: {
+    lobby:            '← Lobby',
+    connecting:       'Connecting…',
+    connLost:         'Connection lost — reconnecting…',
+    noConnect:        'Could not connect to the room.',
+    backLobby:        'Back to lobby →',
+    round:            (n: number) => `Round ${n}`,
+    czarLine:         (name: string) => `${name} is the Card Czar — everyone pick your best answer…`,
+    you:              'You',
+    winsRound:        (name: string) => `🏆 ${name} wins the round!`,
+    nextRound:        'Next round →',
+    waitingHost:      'Waiting for host to continue…',
+  },
+  sv: {
+    lobby:            '← Lobbyn',
+    connecting:       'Ansluter…',
+    connLost:         'Anslutning förlorad — ansluter igen…',
+    noConnect:        'Kunde inte ansluta till rummet.',
+    backLobby:        'Tillbaka till lobbyn →',
+    round:            (n: number) => `Runda ${n}`,
+    czarLine:         (name: string) => `${name} är Kortcesar — välj ditt bästa svar…`,
+    you:              'Du',
+    winsRound:        (name: string) => `🏆 ${name} vinner rundan!`,
+    nextRound:        'Nästa runda →',
+    waitingHost:      'Väntar på att värden fortsätter…',
+  },
+}
+const t = computed(() => UI[isSv.value ? 'sv' : 'en'])
+
 const czarName = computed(() => {
   if (!room.value || !currentRound.value) return ''
   const czar = room.value.players.find((p) => p.id === currentRound.value!.czarId)
-  return czar ? (czar.id === playerId.value ? 'You' : czar.name) : ''
+  return czar ? (czar.id === playerId.value ? t.value.you : czar.name) : ''
 })
 
 const nonCzarCount = computed(() => {
@@ -210,7 +244,7 @@ const nonCzarCount = computed(() => {
 const roundWinnerName = computed(() => {
   if (!room.value || !currentRound.value?.winnerId) return ''
   const winner = room.value.players.find((p) => p.id === currentRound.value!.winnerId)
-  return winner ? (winner.id === playerId.value ? 'You' : winner.name) : ''
+  return winner ? (winner.id === playerId.value ? t.value.you : winner.name) : ''
 })
 
 const winningCards = computed<WhiteCard[]>(() => {

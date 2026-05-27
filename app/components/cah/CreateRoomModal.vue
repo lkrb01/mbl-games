@@ -62,6 +62,22 @@
           </div>
         </div>
 
+        <div class="field">
+          <label class="label">Language</label>
+          <div class="toggle-row">
+            <button
+              class="toggle-btn"
+              :class="{ active: form.language === 'en' }"
+              @click="form.language = 'en'"
+            >🇬🇧 English</button>
+            <button
+              class="toggle-btn"
+              :class="{ active: form.language === 'sv' }"
+              @click="form.language = 'sv'"
+            >🇸🇪 Svenska</button>
+          </div>
+        </div>
+
         <p v-if="error" class="error-msg">{{ error }}</p>
 
         <div class="actions">
@@ -88,7 +104,14 @@ const form = reactive({
   isPublic: true,
   pointsToWin: 8,
   maxPlayers: 10,
+  language: 'en' as 'en' | 'sv',
 })
+
+onMounted(() => {
+  form.language = (localStorage.getItem('cah-lang') as 'en' | 'sv') ?? 'en'
+})
+
+const packForLanguage = { en: ['base'], sv: ['swedish'] }
 
 const loading = ref(false)
 const error = ref('')
@@ -107,6 +130,7 @@ async function submit() {
           isPublic: form.isPublic,
           pointsToWin: form.pointsToWin,
           maxPlayers: form.maxPlayers,
+          packs: packForLanguage[form.language],
         },
         bots: 0,
       },

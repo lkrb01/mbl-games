@@ -2,11 +2,11 @@
   <div class="game-over">
 
     <div class="trophy">🏆</div>
-    <h1 class="winner-name">{{ winner.name }} wins!</h1>
-    <p class="winner-score">{{ winner.score }} Awesome Point{{ winner.score !== 1 ? 's' : '' }}</p>
+    <h1 class="winner-name">{{ t.wins(winner.name) }}</h1>
+    <p class="winner-score">{{ t.points(winner.score) }}</p>
 
     <div class="leaderboard">
-      <h2 class="lb-title">Final Scores</h2>
+      <h2 class="lb-title">{{ t.finalScore }}</h2>
       <ul class="lb-list">
         <li
           v-for="(player, index) in sorted"
@@ -17,7 +17,7 @@
           <span class="lb-rank">{{ index + 1 }}</span>
           <span class="lb-name">
             {{ player.name }}
-            <span v-if="player.id === myPlayerId" class="you-tag">(you)</span>
+            <span v-if="player.id === myPlayerId" class="you-tag">{{ t.you }}</span>
           </span>
           <span class="lb-score">{{ player.score }}</span>
         </li>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="actions">
-      <NuxtLink to="/games/cah" class="lobby-btn">← Back to lobby</NuxtLink>
+      <NuxtLink to="/games/cah" class="lobby-btn">{{ t.backLobby }}</NuxtLink>
     </div>
 
   </div>
@@ -37,7 +37,26 @@ import type { Player } from '../../../shared/types/cah'
 const props = defineProps<{
   players: Player[]
   myPlayerId?: string
+  lang?: 'en' | 'sv'
 }>()
+
+const STRINGS = {
+  en: {
+    wins:       (name: string) => `${name} wins!`,
+    points:     (n: number) => `${n} Awesome Point${n !== 1 ? 's' : ''}`,
+    finalScore: 'Final Scores',
+    you:        '(you)',
+    backLobby:  '← Back to lobby',
+  },
+  sv: {
+    wins:       (name: string) => `${name} vinner!`,
+    points:     (n: number) => `${n} Häftiga poäng`,
+    finalScore: 'Slutresultat',
+    you:        '(du)',
+    backLobby:  '← Tillbaka till lobbyn',
+  },
+}
+const t = computed(() => STRINGS[props.lang ?? 'en'])
 
 const sorted = computed(() =>
   [...props.players].sort((a, b) => b.score - a.score),

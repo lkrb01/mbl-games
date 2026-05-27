@@ -3,14 +3,14 @@
 
     <div class="room-header">
       <h1 class="room-name">{{ room.config.name }}</h1>
-      <p class="room-subtitle">Waiting for players…</p>
+      <p class="room-subtitle">{{ t.waiting }}</p>
     </div>
 
     <!-- Shareable code + link -->
     <div class="share-box">
       <div class="room-code">{{ room.id }}</div>
       <button class="copy-btn" @click="copyLink">
-        {{ copied ? '✓ Copied!' : '🔗 Copy invite link' }}
+        {{ copied ? t.copied : t.copyLink }}
       </button>
     </div>
 
@@ -29,16 +29,16 @@
         </span>
         <span class="player-name">
           {{ player.name }}
-          <span v-if="player.id === myPlayerId" class="you-tag">(you)</span>
+          <span v-if="player.id === myPlayerId" class="you-tag">{{ t.you }}</span>
         </span>
-        <span v-if="player.isHost" class="host-tag">Host</span>
-        <span v-if="player.isBot" class="bot-tag">Bot</span>
+        <span v-if="player.isHost" class="host-tag">{{ t.host }}</span>
+        <span v-if="player.isBot" class="bot-tag">{{ t.bot }}</span>
 
         <!-- Host can kick human players -->
         <button
           v-if="isHost && !player.isHost && !player.isBot && player.id !== myPlayerId"
           class="kick-btn"
-          title="Kick player"
+          :title="t.kickTitle"
           @click="$emit('kick', player.id)"
         >✕</button>
       </li>
@@ -47,9 +47,9 @@
     <!-- Status / start -->
     <div class="footer">
       <p class="player-count">
-        {{ room.players.length }} / {{ room.config.maxPlayers }} players
+        {{ t.players(room.players.length, room.config.maxPlayers) }}
         <span v-if="room.players.length < 3" class="need-more">
-          — need at least {{ 3 - room.players.length }} more
+          {{ t.needMore(3 - room.players.length) }}
         </span>
       </p>
 
@@ -59,10 +59,10 @@
         :disabled="room.players.length < 3"
         @click="$emit('start')"
       >
-        Start game →
+        {{ t.startGame }}
       </button>
       <p v-else class="waiting-msg">
-        Waiting for the host to start…
+        {{ t.waitingHost }}
       </p>
     </div>
 
@@ -76,7 +76,38 @@ const props = defineProps<{
   room: Room
   myPlayerId: string
   isHost: boolean
+  lang?: 'en' | 'sv'
 }>()
+
+const STRINGS = {
+  en: {
+    waiting:       'Waiting for players…',
+    copied:        '✓ Copied!',
+    copyLink:      '🔗 Copy invite link',
+    you:           '(you)',
+    host:          'Host',
+    bot:           'Bot',
+    kickTitle:     'Kick player',
+    players:       (n: number, max: number) => `${n} / ${max} players`,
+    needMore:      (n: number) => `— need at least ${n} more`,
+    startGame:     'Start game →',
+    waitingHost:   'Waiting for the host to start…',
+  },
+  sv: {
+    waiting:       'Väntar på spelare…',
+    copied:        '✓ Kopierat!',
+    copyLink:      '🔗 Kopiera inbjudningslänk',
+    you:           '(du)',
+    host:          'Värd',
+    bot:           'Bot',
+    kickTitle:     'Kicka spelare',
+    players:       (n: number, max: number) => `${n} / ${max} spelare`,
+    needMore:      (n: number) => `— behöver minst ${n} till`,
+    startGame:     'Starta spel →',
+    waitingHost:   'Väntar på att värden startar…',
+  },
+}
+const t = computed(() => STRINGS[props.lang ?? 'en'])
 
 defineEmits<{
   start: []

@@ -8,27 +8,27 @@
     <!-- Header -->
     <header class="hero">
       <div class="black-card-preview">
-        <p class="black-card-text">A party game for <span class="blank">horrible people</span>.</p>
+        <p class="black-card-text"><span class="blank">{{ t.tagline }}</span></p>
       </div>
-      <h1 class="title">Cards Against Humanity</h1>
-      <p class="subtitle">Multiplayer · Up to 10 players</p>
+      <h1 class="title">{{ t.title }}</h1>
+      <p class="subtitle">{{ t.subtitle }}</p>
     </header>
 
     <!-- Name input -->
     <div v-if="!nameConfirmed" class="name-gate">
-      <p class="name-prompt">What should we call you?</p>
+      <p class="name-prompt">{{ t.namePrompt }}</p>
       <div class="name-row">
         <input
           v-model="playerName"
           class="name-input"
           type="text"
           maxlength="24"
-          placeholder="Your name…"
+          :placeholder="t.namePlaceholder"
           autofocus
           @keydown.enter="confirmName"
         >
         <button class="name-btn" :disabled="!playerName.trim()" @click="confirmName">
-          Let's go →
+          {{ t.letsGo }}
         </button>
       </div>
     </div>
@@ -36,17 +36,17 @@
     <!-- Lobby actions -->
     <template v-else>
       <div class="greeting">
-        Playing as <strong>{{ playerName }}</strong>
-        <button class="change-name" @click="nameConfirmed = false">change</button>
+        {{ t.playingAs }} <strong>{{ playerName }}</strong>
+        <button class="change-name" @click="nameConfirmed = false">{{ t.change }}</button>
       </div>
 
       <div class="actions">
         <button class="btn primary" @click="showCreate = true">
-          ✚ Create game
+          ✚ {{ t.createGame }}
         </button>
         <button class="btn demo" :disabled="creatingDemo" @click="createDemo">
-          <span v-if="creatingDemo">Starting…</span>
-          <span v-else>🤖 Solo demo</span>
+          <span v-if="creatingDemo">{{ t.starting }}</span>
+          <span v-else>🤖 {{ t.soloDemo }}</span>
         </button>
       </div>
 
@@ -57,11 +57,11 @@
           class="code-input"
           type="text"
           maxlength="6"
-          placeholder="Enter room code…"
+          :placeholder="t.roomCodePlaceholder"
           @keydown.enter="joinByCode"
         >
         <button class="btn secondary" :disabled="roomCode.length < 4" @click="joinByCode">
-          Join →
+          {{ t.join }}
         </button>
       </div>
 
@@ -87,6 +87,48 @@
 <script setup lang="ts">
 import type { PublicRoomSummary } from '../../../../shared/types/cah'
 
+// ── Language ───────────────────────────────────────────────────────────────────
+const lang = ref<'en' | 'sv'>('en')
+onMounted(() => {
+  lang.value = (localStorage.getItem('cah-lang') as 'en' | 'sv') ?? 'en'
+})
+
+const STRINGS = {
+  en: {
+    tagline:           'Unfiltered. Unapologetic. Unforgettable.',
+    title:             'Appropriately Disgusting',
+    subtitle:          'Multiplayer · Up to 10 players',
+    namePrompt:        'What should we call you?',
+    namePlaceholder:   'Your name…',
+    letsGo:            'Let\'s go →',
+    playingAs:         'Playing as',
+    change:            'change',
+    createGame:        'Create game',
+    starting:          'Starting…',
+    soloDemo:          'Solo demo',
+    roomCodePlaceholder: 'Enter room code…',
+    join:              'Join →',
+  },
+  sv: {
+    tagline:           'Ofiltrerat. Oursäktat. Oförglömligt.',
+    title:             'Lagom Äckligt',
+    subtitle:          'Multiplayer · Upp till 10 spelare',
+    namePrompt:        'Vad ska vi kalla dig?',
+    namePlaceholder:   'Ditt namn…',
+    letsGo:            'Kör! →',
+    playingAs:         'Spelar som',
+    change:            'ändra',
+    createGame:        'Skapa spel',
+    starting:          'Startar…',
+    soloDemo:          'Solo-demo',
+    roomCodePlaceholder: 'Ange rumskod…',
+    join:              'Gå med →',
+  },
+}
+
+const t = computed(() => STRINGS[lang.value])
+
+// ── Game state ─────────────────────────────────────────────────────────────────
 const playerName    = useCAHPlayerName()
 const nameConfirmed = ref(false)
 const showCreate    = ref(false)
@@ -141,6 +183,7 @@ async function createDemo() {
           isPublic: false,
           pointsToWin: 5,
           maxPlayers: 5,
+          packs: lang.value === 'sv' ? ['swedish'] : ['base'],
         },
         bots: 3,
       },
