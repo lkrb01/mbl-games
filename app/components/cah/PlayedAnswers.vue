@@ -158,9 +158,10 @@ function handleClick(sub: Submission, index: number) {
 }
 
 .card-stack {
-  position: relative;
   width: 100%;
-  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* Face-down card */
@@ -204,10 +205,8 @@ function handleClick(sub: Submission, index: number) {
   background: #f8fafc;
   border: 2px solid #e2e8f0;
   padding: 12px;
-  position: absolute;
+  position: relative;
   width: 100%;
-  top: 0;
-  left: 0;
 }
 
 .submission.winner .face-up {
@@ -225,7 +224,7 @@ function handleClick(sub: Submission, index: number) {
 
 .winner-crown {
   position: absolute;
-  top: 6px;
+  bottom: 6px;
   right: 8px;
   font-size: 1rem;
 }
